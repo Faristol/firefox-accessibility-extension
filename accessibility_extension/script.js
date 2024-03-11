@@ -39,13 +39,48 @@
         break;
       case keys.includes("action"):
         if (message.action === "play") {
-          textToSpeech();
+          let summarizedText = sumup();
         } else if (message.action === "pause") {
         } else if (message.action === "stop") {
         }
         break;
     }
   });
+  function extractText() {
+    let text = document.querySelector("body").innerText;
+    return text.trim().replace(/\s+/g, " ");
+  }
+  function sumup() {
+    let text = extractText();
+    console.log("Text:", text);
+    const url = "http://127.0.0.1:5000/sumup";
+    let payload = {
+      text: text,
+    };
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    };
+    fetch(url, requestOptions)
+      .then((response) => {
+        if (!response.ok) {
+          console.error("Error:", response.status, response.statusText);
+          throw new Error("La solicitud falló");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        // Obtiene el resumen de la respuesta JSON
+        const summary = data.summary;
+        console.log("Resumen obtenido:", summary);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
   function textToSpeech() {
     let text =
       document.querySelector("body").innerText ||

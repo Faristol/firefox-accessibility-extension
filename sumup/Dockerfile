@@ -1,12 +1,16 @@
 FROM ubuntu:latest
 
-RUN apt update && \
-    apt install -y python3-pip && \
+RUN apt-get update && \
+    apt-get install -y python3-pip git git-all && \
+    apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install Flask transformers torch
+RUN pip3 install Flask flask-cors transformers torch
+RUN git lfs install
+RUN git clone https://huggingface.co/facebook/bart-large-cnn
+EXPOSE 5000
 
 WORKDIR /sumup
 COPY . .
 
-CMD ["python3", "-m", "flask", "run", "--host=0.0.0.0"]
+CMD ["python3", "sumup.py"]
