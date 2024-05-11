@@ -4,8 +4,7 @@ button {
     /* border thickness */
     --s: .45em;
     /* size of the corner */
-    --color: #373B44;
-
+    --color: bisque;
     padding: calc(.5em + var(--s)) calc(.9em + var(--s));
     color: var(--color);
     --_p: var(--s);
@@ -16,9 +15,7 @@ button {
     outline-offset: .6em;
     font-size: 16px;
     font-weight: bolder;
-
     border: 0;
-
     user-select: none;
     -webkit-user-select: none;
     touch-action: manipulation;
@@ -28,14 +25,14 @@ p{
     color: #373B44;
     font-size: 18px;
     font-weight: bolder;
-    border-bottom: 3px solid #373B44;
-
+    border-bottom: 3px solid bisque;
 }
 button:hover,
 button:focus-visible {
     --_p: 0px;
     outline-color: var(--color);
     outline-offset: .05em;
+    background-color: green;
 }
 
 button:active {
@@ -48,7 +45,6 @@ body{
 }
 button{
     text-align: center;
-
 }
 div{
     display: flex;
@@ -59,3 +55,13 @@ div{
     backdrop-filter: blur(20px);
     color: bisque;
 }
+body{
+    background-color: black;
+}
+#btnRedirect{
+    background-color: rgb(111,78,55);
+    color: bisque;
+}
+
+
+

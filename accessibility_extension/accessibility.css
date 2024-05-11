@@ -1,0 +1,25 @@
+.contrast{
+    background-color: black !important;
+    color: white !important;
+}
+.bold{
+    font-weight: bolder !important;
+}
+.small{
+    font-size: small !important;
+}
+.medium{
+    font-size: medium !important;
+}
+.large{
+    font-size: large !important;
+}
+.x-large{
+    font-size: x-large !important;
+}
+.xx-large{
+    font-size: xx-large !important;
+}
+.xxx-large{
+    font-size: xxx-large !important;
+}

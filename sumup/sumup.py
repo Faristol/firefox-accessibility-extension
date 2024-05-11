@@ -2,12 +2,15 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from transformers import BartForConditionalGeneration, BartTokenizer
 
+
 app = Flask(__name__)
 CORS(app, origins="*")
 
 # Inicializar el modelo BART y el tokenizador
 model = BartForConditionalGeneration.from_pretrained("facebook/bart-large-cnn")
 tokenizer = BartTokenizer.from_pretrained("facebook/bart-large-cnn")
+
+
 
 
 @app.route('/sumup', methods=['POST'])
@@ -50,6 +53,8 @@ def summarize_text():
 
     # Unir los resúmenes de los trozos
     full_summary = " ".join(summaries)
+  
+    
 
     return jsonify({'summary': full_summary})
 

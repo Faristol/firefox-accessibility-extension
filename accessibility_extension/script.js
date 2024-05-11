@@ -1,15 +1,12 @@
 (() => {
-  if (window.hasRun) {
-    return;
-  } else {
-    window.hasRun = true;
-    let originalProperties = mappingElements();
-    localStorage.setItem(
-      "originalProperties",
-      JSON.stringify(originalProperties)
-    );
-  }
-
+  const SIZES = [
+    "small",
+    "medium",
+    "large",
+    "x-large",
+    "xx-large",
+    "xxx-large",
+  ];
   browser.runtime.onMessage.addListener((message) => {
     const keys = Object.keys(message);
     switch (true) {
@@ -18,28 +15,26 @@
           resetProperty("font-size");
           break;
         }
-        changeProperty("font-size", message.fontsize);
+        changeProperty(message.fontsize);
         break;
       case keys.includes("contrast"):
         if (message.contrast === "reset") {
-          resetProperty("color");
-          resetProperty("background-color");
+          resetProperty("contrast");
           break;
         }
-        changeProperty("color", "white");
-        changeProperty("background-color", "black");
+        changeProperty(message.contrast);
         break;
 
       case keys.includes("bold"):
         if (message.bold === "reset") {
-          resetProperty("font-weight");
+          resetProperty("bold");
           break;
         }
-        changeProperty("font-weight", message.bold);
+        changeProperty(message.bold);
         break;
       case keys.includes("action"):
         if (message.action === "play") {
-          let summarizedText = sumup();
+          sumup();
         } else if (message.action === "pause") {
         } else if (message.action === "stop") {
         }
@@ -76,85 +71,69 @@
         // Obtiene el resumen de la respuesta JSON
         const summary = data.summary;
         console.log("Resumen obtenido:", summary);
+        textToSpeech(summary);
       })
       .catch((error) => {
         console.error("Error:", error);
       });
   }
-  function textToSpeech() {
-    let text =
-      document.querySelector("body").innerText ||
-      document.querySelector("body").innerContent;
+  function textToSpeech(text, rate = 0.8, volume = 1, pitch = 1) {
     let utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = rate; // Velocidad del habla
+    utterance.volume = volume; // Volumen del habla
+    utterance.pitch = pitch; // Tono del habla
+
+    // Obtener una voz específica (opcional)
+    let voices = window.speechSynthesis.getVoices();
+    utterance.voice = voices[3]; // Selecciona la primera voz disponible
+
     speechSynthesis.speak(utterance);
   }
-  function changeProperty(property, value) {
+  function changeProperty(cssClass) {
     let elements = document.querySelectorAll("*");
-    for (let i = 0; i < elements.length; i++) {
-      elements[i].style.setProperty(property, value, "important");
-    }
-  }
 
-  function resetProperty(property) {
-    let originalProperties = JSON.parse(
-      localStorage.getItem("originalProperties")
-    );
-    let elements = document.querySelectorAll("*");
     for (let i = 0; i < elements.length; i++) {
-      switch (true) {
-        case property === "font-size":
-          if (originalProperties[i].element === elements[i].nodeName) {
-            elements[i].style.setProperty(
-              "font-size",
-              originalProperties[i].fontsize,
-              "important"
-            );
-          }
-          break;
-        case property === "color":
-          if (originalProperties[i].element === elements[i].nodeName) {
-            elements[i].style.setProperty(
-              "color",
-              originalProperties[i].color,
-              "important"
-            );
-            break;
-          }
-        case property === "background-color":
-          if (originalProperties[i].element === elements[i].nodeName) {
-            elements[i].style.setProperty(
-              "background-color",
-              originalProperties[i].backgroundcolor,
-              "important"
-            );
-          }
-          break;
-        case property === "font-weight":
-          if (originalProperties[i].element === elements[i].nodeName) {
-            elements[i].style.setProperty(
-              "font-weight",
-              originalProperties[i].fontweight,
-              "important"
-            );
-          }
-          break;
+      //es comprova si la classe correspon als sizes, si correspon
+      //vegem si ja existeix una classe de tipo size
+
+      if (SIZES.includes(cssClass)) {
+        if (SIZES.some((size) => elements[i].classList.contains(size))) {
+          SIZES.forEach((size) => {
+            if (elements[i].classList.contains(size)) {
+              elements[i].classList.remove(size);
+            }
+          });
+          elements[i].classList.add(cssClass);
+        } else {
+          elements[i].classList.add(cssClass);
+        }
+      } else {
+        elements[i].classList.add(cssClass);
       }
     }
   }
 
-  function mappingElements() {
+  function resetProperty(property) {
     let elements = document.querySelectorAll("*");
-    let originalProperties = [];
     for (let i = 0; i < elements.length; i++) {
-      let style = window.getComputedStyle(elements[i]);
-      originalProperties.push({
-        element: elements[i].nodeName,
-        fontsize: style.getPropertyValue("font-size"),
-        fontweight: style.getPropertyValue("font-weight"),
-        backgroundcolor: style.getPropertyValue("background-color"),
-        color: style.getPropertyValue("color"),
-      });
+      switch (true) {
+        case property === "font-size":
+          SIZES.forEach((size) => {
+            if (elements[i].classList.contains(size)) {
+              elements[i].classList.remove(size);
+            }
+          });
+        case property === "contrast":
+          if (elements[i].classList.contains("contrast")) {
+            elements[i].classList.remove(property);
+          }
+          break;
+        case property === "bold":
+          if (elements[i].classList.contains("bold")) {
+            elements[i].classList.remove(property);
+          }
+          break;
+      }
     }
-    return originalProperties;
   }
 })();
