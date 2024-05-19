@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
   buyMeACoffee();
   initializeEvents();
 });
+
 const buyMeACoffee = () => {
   document.getElementById("btnRedirect").addEventListener("click", function() {
     window.location.href = "https://ko-fi.com/faristol";

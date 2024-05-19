@@ -1,4 +1,29 @@
 (() => {
+  // localStorage.getItem("fontsize") ? changeProperty(localStorage.getItem("fontsize")) : "";
+  // localStorage.getItem("contrast") ? changeProperty("contrast") : "";
+  // localStorage.getItem("bold") ? changeProperty("bold") : "";
+  // console.log("Extension loaded");
+  // console.log(localStorage.getItem("fontsize"));
+  // console.log(localStorage.getItem("contrast"));
+  // console.log(localStorage.getItem("bold"));
+  if (window.hasRun) {
+    return;
+  } else {
+    window.hasRun = true;
+    console.log("window.has run trueeee");
+    console.log(localStorage);
+    console.log(localStorage.getItem("fontsize-extension-accessibility"));
+    if (localStorage.getItem("fontsize-extension-accessibility")) {
+      changeProperty(localStorage.getItem("fontsize-extension-accessibility"));
+    }
+    if (localStorage.getItem("contrast-extension-accessibility")) {
+      changeProperty("contrast");
+    }
+    if (localStorage.getItem("bold-extension-accessibility")) {
+      changeProperty("bold");
+    }
+  }
+
   const SIZES = [
     "small",
     "medium",
@@ -103,37 +128,49 @@
               elements[i].classList.remove(size);
             }
           });
-          elements[i].classList.add(cssClass);
-        } else {
-          elements[i].classList.add(cssClass);
         }
-      } else {
-        elements[i].classList.add(cssClass);
       }
+
+      elements[i].classList.add(cssClass);
+    }
+    if (cssClass === "contrast") {
+      localStorage.setItem("contrast-extension-accessibility", cssClass);
+    } else if (cssClass === "bold") {
+      localStorage.setItem("bold-extension-accessibility", cssClass);
+    } else if (SIZES.includes(cssClass)) {
+      localStorage.setItem("fontsize-extension-accessibility", cssClass);
     }
   }
 
   function resetProperty(property) {
     let elements = document.querySelectorAll("*");
     for (let i = 0; i < elements.length; i++) {
-      switch (true) {
-        case property === "font-size":
+      switch (property) {
+        case "font-size":
           SIZES.forEach((size) => {
             if (elements[i].classList.contains(size)) {
               elements[i].classList.remove(size);
             }
           });
-        case property === "contrast":
-          if (elements[i].classList.contains("contrast")) {
-            elements[i].classList.remove(property);
-          }
           break;
-        case property === "bold":
-          if (elements[i].classList.contains("bold")) {
+        case "contrast":
+        case "bold":
+          if (elements[i].classList.contains(property)) {
             elements[i].classList.remove(property);
           }
           break;
       }
+    }
+    switch (property) {
+      case "font-size":
+        localStorage.removeItem("fontsize-extension-accessibility");
+        break;
+      case "contrast":
+        localStorage.removeItem("contrast-extension-accessibility");
+        break;
+      case "bold":
+        localStorage.removeItem("bold-extension-accessibility");
+        break;
     }
   }
 })();
