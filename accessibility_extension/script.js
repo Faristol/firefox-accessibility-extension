@@ -21,6 +21,8 @@ const readLocalStorage = async (keys) => {
   });
 };
 
+
+
 const writeLocalStorage = async (key, value) => {
   return new Promise((resolve, reject) => {
     browser.storage.sync.set({ [key]: value }, function () {
