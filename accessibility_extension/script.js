@@ -101,9 +101,6 @@ browser.runtime.onMessage.addListener((message) => {
   if (keys[0] === "action_ai") {
     switch (value) {
       case "play":
-        // const text =extractText();
-        // utterance = new SpeechSynthesisUtterance(text);
-        // window.speechSynthesis.speak(utterance);
         const text = extractText();
         sumup(text);
         utterancePlay(text);
@@ -111,6 +108,7 @@ browser.runtime.onMessage.addListener((message) => {
       case "pause":
         if (utterance) {
           synth.pause();
+          //functions pause and resume don't work in linux
         }
 
         break;
@@ -127,32 +125,27 @@ browser.runtime.onMessage.addListener((message) => {
         }
         break;
     }
-
     return;
   }
-  //reproduce text normal
+  //reproduce normal text
   if (keys[0] === "action") {
     switch (value) {
       case "play":
         const text = extractText();
         utterancePlay(text);
-
         break;
       case "pause":
         if (utterance) {
-          console.log("pause")
           synth.pause();
         }
         break;
       case "resume":
         if (utterance) {
-          console.log("resume")
           synth.resume();
         }
         break;
       case "cancel":
         if (utterance) {
-          console.log("cancel")
           synth.cancel();
           utterance = null;
         }
@@ -169,7 +162,7 @@ browser.runtime.onMessage.addListener((message) => {
     return;
   }
   //apply some style
-  //in some pages like wikipedia, we need to reload the page
+  //in some pages like wikipedia, we need to reload the page to apply contrast.
 
   changeProperty(value);
   writeLocalStorage(keys[0], value);
@@ -182,24 +175,17 @@ function extractText() {
 
 function utterancePlay(text) {
   utterance = new SpeechSynthesisUtterance(text);
-  console.log(utterance);
   utterance.volume = 0.7;
   utterance.rate = 0.8;
   utterance.pitch = 1;
   const voices = synth.getVoices();
   const pageLang = document.documentElement.lang;
-  console.log(pageLang);
   const voice = voices.find((voice) => {
     const regex = new RegExp(pageLang, "i");
     return voice.lang.match(regex);
   });
   if (voice) {
-    console.log(voice);
-    console.log(voice.lang)
     utterance.voice = voice;
-    console.log(utterance);
-    console.log(text);
-    //window.speechSynthesis.speak(utterance);
     synth.speak(utterance);
   } else {
     console.log("No voice found for", pageLang);
@@ -229,9 +215,7 @@ function sumup(text) {
     })
     .then((data) => {
       const summary = data.summary;
-      console.log("Summary:", summary);
       return summary;
-      //textToSpeech(summary);
     })
     .catch((error) => {
       console.error("Error:", error);
@@ -239,12 +223,7 @@ function sumup(text) {
 }
 function changeProperty(cssClass) {
   let elements = document.querySelectorAll("*");
-  console.log("change property", cssClass);
-
   for (let i = 0; i < elements.length; i++) {
-    //es comprova si la classe correspon als sizes, si correspon
-    //vegem si ja existeix una classe de tipo size
-
     if (SIZES.includes(cssClass)) {
       if (SIZES.some((size) => elements[i].classList.contains(size))) {
         SIZES.forEach((size) => {
@@ -262,13 +241,11 @@ function changeProperty(cssClass) {
         });
       }
     }
-
     elements[i].classList.add(cssClass);
   }
 }
 
 function resetProperty(property) {
-  console.log("reset property", property);
   let elementsToUpdate = {
     fontsize: document.querySelectorAll(
       ".small, .medium, .large, .x-large, .xx-large, .xxx-large"

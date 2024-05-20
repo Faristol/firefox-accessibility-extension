@@ -1,19 +1,20 @@
-# Accessibility Extension
+# Project Title
 
-This browser extension aims to enhance accessibility for users with visual impairments by providing a set of features to improve their browsing experience. The extension offers the following functionalities:
+Accessibility extension for firefox
 
-**Font Size Adjustment**
+## Description
 
-Users can easily adjust the font size on web pages to better suit their preferences and needs. The extension provides several predefined font size options and allows users to customize the font size according to their requirements.
+This extension acts as a multipurpose accessibility extension, these are the features it handles:
 
-**Contrast Adjustment**
 
-Enhancing readability is crucial for users with visual impairments. This extension offers options to adjust the contrast of web pages, making it easier for users to distinguish text and other elements.
+*Changes the size and weight of the text
+*Add contrast
+*Invert colors
+*Changes the font (Arial, OpenDyslexic, Atkinson Hyperlegible)
+*Can reproduce the text of the page
+*Incorpores a adblocker with a 96% of effectiveness
 
-**Text-to-Speech Assistant**
+## Help
 
-For users who may have difficulty reading text on web pages, the extension includes a text-to-speech feature. This feature allows users to have the text on the page read aloud, providing an alternative way to consume content.
+If need some help or find some bugs, contact : faristol.dev@gmail.com
 
-**Ad Blocker**
-
-To create a distraction-free browsing experience, the extension includes an ad blocker. By blocking advertisements on web pages, users can focus more on the content they are interested in without interruptions.
