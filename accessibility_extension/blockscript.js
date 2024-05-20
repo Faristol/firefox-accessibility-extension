@@ -7,6 +7,4 @@ browser.webRequest.onBeforeRequest.addListener(
   ["blocking"]
 );
 
-  //quant cambie la url
-
 

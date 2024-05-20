@@ -1,176 +1,298 @@
-(() => {
-  // localStorage.getItem("fontsize") ? changeProperty(localStorage.getItem("fontsize")) : "";
-  // localStorage.getItem("contrast") ? changeProperty("contrast") : "";
-  // localStorage.getItem("bold") ? changeProperty("bold") : "";
-  // console.log("Extension loaded");
-  // console.log(localStorage.getItem("fontsize"));
-  // console.log(localStorage.getItem("contrast"));
-  // console.log(localStorage.getItem("bold"));
-  if (window.hasRun) {
-    return;
-  } else {
-    window.hasRun = true;
-    console.log("window.has run trueeee");
-    console.log(localStorage);
-    console.log(localStorage.getItem("fontsize-extension-accessibility"));
-    if (localStorage.getItem("fontsize-extension-accessibility")) {
-      changeProperty(localStorage.getItem("fontsize-extension-accessibility"));
-    }
-    if (localStorage.getItem("contrast-extension-accessibility")) {
-      changeProperty("contrast");
-    }
-    if (localStorage.getItem("bold-extension-accessibility")) {
-      changeProperty("bold");
-    }
-  }
-
-  const SIZES = [
-    "small",
-    "medium",
-    "large",
-    "x-large",
-    "xx-large",
-    "xxx-large",
-  ];
-  browser.runtime.onMessage.addListener((message) => {
-    const keys = Object.keys(message);
-    switch (true) {
-      case keys.includes("fontsize"):
-        if (message.fontsize === "reset") {
-          resetProperty("font-size");
-          break;
-        }
-        changeProperty(message.fontsize);
-        break;
-      case keys.includes("contrast"):
-        if (message.contrast === "reset") {
-          resetProperty("contrast");
-          break;
-        }
-        changeProperty(message.contrast);
-        break;
-
-      case keys.includes("bold"):
-        if (message.bold === "reset") {
-          resetProperty("bold");
-          break;
-        }
-        changeProperty(message.bold);
-        break;
-      case keys.includes("action"):
-        if (message.action === "play") {
-          sumup();
-        } else if (message.action === "pause") {
-        } else if (message.action === "stop") {
-        }
-        break;
-    }
+const SIZES = ["small", "medium", "large", "x-large", "xx-large", "xxx-large"];
+const FONTS = ["arial", "opendyslexic", "hyperlegible"];
+const STYLES = ["fontsize", "contrast", "bold", "invert", "fontfamily"];
+let utterance = null;
+let synth = window.speechSynthesis
+/*
+->FUNCTIONS THAT OPERATES WITH THE FIREFOX STORAGE (read,write,remove)
+->INITIAL CALL TO READ THE LOCAL STORAGE AND ADD THE STYLES STORED TOT THE CURRENT PAGE
+->FUNCTION THAT LISTENS MESSAGES FROM THE POPUP AND APPLIES THE SYLES OR REMOVE THEM
+  ->AUX FUNCTIONS CALLED IN THE LISTENER GENERAL FUNCTION
+*/
+const readLocalStorage = async (keys) => {
+  return new Promise((resolve, reject) => {
+    browser.storage.sync.get(keys, function (result) {
+      if (browser.runtime.lastError) {
+        reject(browser.runtime.lastError);
+      } else {
+        resolve(result);
+      }
+    });
   });
-  function extractText() {
-    let text = document.querySelector("body").innerText;
-    return text.trim().replace(/\s+/g, " ");
+};
+
+const writeLocalStorage = async (key, value) => {
+  return new Promise((resolve, reject) => {
+    browser.storage.sync.set({ [key]: value }, function () {
+      if (browser.runtime.lastError) {
+        reject(browser.runtime.lastError);
+      } else {
+        resolve();
+      }
+    });
+  });
+};
+const removeLocalStorage = async (key) => {
+  return new Promise((resolve, reject) => {
+    browser.storage.sync.remove(key, function () {
+      if (browser.runtime.lastError) {
+        reject(browser.runtime.lastError);
+      } else {
+        resolve();
+      }
+    });
+  });
+};
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", afterDOMLoaded);
+} else {
+  afterDOMLoaded();
+  appendFonts();
+}
+function appendFonts() {
+  const fontUrlDyslexic = browser.runtime.getURL(
+    "fonts/opendyslexic-regular.ttf"
+  );
+  const styleDyslexic = document.createElement("style");
+  styleDyslexic.textContent = `
+  @font-face {
+    font-family: 'opendyslexic';
+    src: url('${fontUrlDyslexic}');
+    font-weight: normal;
+    font-style: normal;
   }
-  function sumup() {
-    let text = extractText();
-    console.log("Text:", text);
-    const url = "http://127.0.0.1:5000/sumup";
-    let payload = {
-      text: text,
-    };
-    const requestOptions = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    };
-    fetch(url, requestOptions)
-      .then((response) => {
-        if (!response.ok) {
-          console.error("Error:", response.status, response.statusText);
-          throw new Error("La solicitud falló");
+`;
+  document.head.appendChild(styleDyslexic);
+
+  const fontUrlHyperlegible = browser.runtime.getURL(
+    "fonts/hyperlegible-regular.ttf"
+  );
+  const styleHyperlegible = document.createElement("style");
+  styleHyperlegible.textContent = `
+  @font-face {
+    font-family: 'hyperlegible';
+    src: url('${fontUrlHyperlegible}');
+    font-weight: normal;
+    font-style: normal;
+  }`;
+  document.head.appendChild(styleHyperlegible);
+}
+async function afterDOMLoaded() {
+  let styles = await readLocalStorage([
+    "fontsize",
+    "contrast",
+    "bold",
+    "invert",
+    "fontfamily",
+  ]);
+  for (values in styles) {
+    changeProperty(styles[values]);
+  }
+}
+
+browser.runtime.onMessage.addListener((message) => {
+  //isn't necessary make a loop for each key, cause there is only one
+  const keys = Object.keys(message);
+  const value = message[keys[0]];
+  //if user press play, stop ... handle it different
+  //summary text with AI
+  if (keys[0] === "action_ai") {
+    switch (value) {
+      case "play":
+        // const text =extractText();
+        // utterance = new SpeechSynthesisUtterance(text);
+        // window.speechSynthesis.speak(utterance);
+        const text = extractText();
+        sumup(text);
+        utterancePlay(text);
+        break;
+      case "pause":
+        if (utterance) {
+          synth.pause();
         }
-        return response.json();
-      })
-      .then((data) => {
-        // Obtiene el resumen de la respuesta JSON
-        const summary = data.summary;
-        console.log("Resumen obtenido:", summary);
-        textToSpeech(summary);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
+
+        break;
+      case "resume":
+        if (utterance) {
+          synth.resume();
+        }
+
+        break;
+      case "cancel":
+        if (utterance) {
+          synth.cancel();
+          utterance = null;
+        }
+        break;
+    }
+
+    return;
+  }
+  //reproduce text normal
+  if (keys[0] === "action") {
+    switch (value) {
+      case "play":
+        const text = extractText();
+        utterancePlay(text);
+
+        break;
+      case "pause":
+        if (utterance) {
+          console.log("pause")
+          synth.pause();
+        }
+        break;
+      case "resume":
+        if (utterance) {
+          console.log("resume")
+          synth.resume();
+        }
+        break;
+      case "cancel":
+        if (utterance) {
+          console.log("cancel")
+          synth.cancel();
+          utterance = null;
+        }
+        break;
+    }
+
+    return;
+  }
+  //reset style
+  if (value === "reset") {
+    resetProperty(keys[0]);
+    removeLocalStorage(keys[0]);
+    //window.location.reload();
+    return;
+  }
+  //apply some style
+  //in some pages like wikipedia, we need to reload the page
+
+  changeProperty(value);
+  writeLocalStorage(keys[0], value);
+  //window.location.reload();
+});
+function extractText() {
+  let text = document.querySelector("body").innerText;
+  return text.trim().replace(/\s+/g, " ");
+}
+
+function utterancePlay(text) {
+  utterance = new SpeechSynthesisUtterance(text);
+  console.log(utterance);
+  utterance.volume = 0.7;
+  utterance.rate = 0.8;
+  utterance.pitch = 1;
+  const voices = synth.getVoices();
+  const pageLang = document.documentElement.lang;
+  console.log(pageLang);
+  const voice = voices.find((voice) => {
+    const regex = new RegExp(pageLang, "i");
+    return voice.lang.match(regex);
+  });
+  if (voice) {
+    console.log(voice);
+    console.log(voice.lang)
+    utterance.voice = voice;
+    console.log(utterance);
+    console.log(text);
+    //window.speechSynthesis.speak(utterance);
+    synth.speak(utterance);
+  } else {
+    console.log("No voice found for", pageLang);
+    utterance.voice = synth.getVoices()[0];
+    synth.speak(utterance);
+  }
+}
+function sumup(text) {
+  const url = "http://127.0.0.1:5000/sumup";
+  let payload = {
+    text: text,
+  };
+  const requestOptions = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  };
+  fetch(url, requestOptions)
+    .then((response) => {
+      if (!response.ok) {
+        console.error("Error:", response.status, response.statusText);
+        throw new Error("Request failed");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      const summary = data.summary;
+      console.log("Summary:", summary);
+      return summary;
+      //textToSpeech(summary);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+}
+function changeProperty(cssClass) {
+  let elements = document.querySelectorAll("*");
+  console.log("change property", cssClass);
+
+  for (let i = 0; i < elements.length; i++) {
+    //es comprova si la classe correspon als sizes, si correspon
+    //vegem si ja existeix una classe de tipo size
+
+    if (SIZES.includes(cssClass)) {
+      if (SIZES.some((size) => elements[i].classList.contains(size))) {
+        SIZES.forEach((size) => {
+          if (elements[i].classList.contains(size))
+            elements[i].classList.remove(size);
+        });
+      }
+    }
+
+    if (FONTS.includes(cssClass)) {
+      if (FONTS.some((font) => elements[i].classList.contains(font))) {
+        FONTS.forEach((font) => {
+          if (elements[i].classList.contains(font))
+            elements[i].classList.remove(font);
+        });
+      }
+    }
+
+    elements[i].classList.add(cssClass);
+  }
+}
+
+function resetProperty(property) {
+  console.log("reset property", property);
+  let elementsToUpdate = {
+    fontsize: document.querySelectorAll(
+      ".small, .medium, .large, .x-large, .xx-large, .xxx-large"
+    ),
+    contrast: document.querySelectorAll(".contrast"),
+    bold: document.querySelectorAll(".bold"),
+    invert: document.querySelectorAll(".invert"),
+    fontfamily: document.querySelectorAll(
+      ".arial, .opendyslexic, .hyperlegible"
+    ),
+  };
+  const elements = elementsToUpdate[property];
+  if (!elements) return;
+  elements.forEach((element) => {
+    if (property === "fontsize") {
+      SIZES.forEach((size) => {
+        if (element.classList.contains(size)) element.classList.remove(size);
       });
-  }
-  function textToSpeech(text, rate = 0.8, volume = 1, pitch = 1) {
-    let utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = rate; // Velocidad del habla
-    utterance.volume = volume; // Volumen del habla
-    utterance.pitch = pitch; // Tono del habla
-
-    // Obtener una voz específica (opcional)
-    let voices = window.speechSynthesis.getVoices();
-    utterance.voice = voices[3]; // Selecciona la primera voz disponible
-
-    speechSynthesis.speak(utterance);
-  }
-  function changeProperty(cssClass) {
-    let elements = document.querySelectorAll("*");
-
-    for (let i = 0; i < elements.length; i++) {
-      //es comprova si la classe correspon als sizes, si correspon
-      //vegem si ja existeix una classe de tipo size
-
-      if (SIZES.includes(cssClass)) {
-        if (SIZES.some((size) => elements[i].classList.contains(size))) {
-          SIZES.forEach((size) => {
-            if (elements[i].classList.contains(size)) {
-              elements[i].classList.remove(size);
-            }
-          });
-        }
-      }
-
-      elements[i].classList.add(cssClass);
+      return;
     }
-    if (cssClass === "contrast") {
-      localStorage.setItem("contrast-extension-accessibility", cssClass);
-    } else if (cssClass === "bold") {
-      localStorage.setItem("bold-extension-accessibility", cssClass);
-    } else if (SIZES.includes(cssClass)) {
-      localStorage.setItem("fontsize-extension-accessibility", cssClass);
+    if (property === "fontfamily") {
+      FONTS.forEach((font) => {
+        if (element.classList.contains(font)) element.classList.remove(font);
+      });
+      return;
     }
-  }
-
-  function resetProperty(property) {
-    let elements = document.querySelectorAll("*");
-    for (let i = 0; i < elements.length; i++) {
-      switch (property) {
-        case "font-size":
-          SIZES.forEach((size) => {
-            if (elements[i].classList.contains(size)) {
-              elements[i].classList.remove(size);
-            }
-          });
-          break;
-        case "contrast":
-        case "bold":
-          if (elements[i].classList.contains(property)) {
-            elements[i].classList.remove(property);
-          }
-          break;
-      }
-    }
-    switch (property) {
-      case "font-size":
-        localStorage.removeItem("fontsize-extension-accessibility");
-        break;
-      case "contrast":
-        localStorage.removeItem("contrast-extension-accessibility");
-        break;
-      case "bold":
-        localStorage.removeItem("bold-extension-accessibility");
-        break;
-    }
-  }
-})();
+    element.classList.remove(property);
+  });
+}

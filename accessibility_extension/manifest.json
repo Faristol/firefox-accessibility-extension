@@ -1,31 +1,63 @@
 {
-    "manifest_version": 2,
-    "name": "Accessibility",
-    "version": "1.0",
-  
-    "description": "It changes the size of the text in the browser, giving to the user the possibility to read it easyly.",
-    "homepage_url": "https://github.com/Faristol/accessibility_extension",
-    "icons": {
-      "48": "icons/eye.png"
-    },
-    "permissions": ["activeTab","tabs","webRequest","webRequestBlocking","<all_urls>","storage"],
-    "browser_action": {
-        "default_icon": "icons/eye.png",
-        "default_title": "Accessibility",
-        "default_popup": "popup/accessibility.html"
-      },
-      "content_scripts": [
-        {
-          "matches": ["<all_urls>"],
-          "js": ["script.js"],
-          "css": ["accessibility.css"]
-        }
+  "manifest_version": 2,
+  "name": "Accessibility",
+  "version": "1.0",
+  "description": "It changes some features of the page to make it more accessible",
+  "homepage_url": "https://github.com/Faristol/firefox-accessibility-extension",
+  "permissions": [
+    "tabs",
+    "webRequest",
+    "webRequestBlocking",
+    "<all_urls>",
+    "storage"
+  ],
+  "browser_action": {
+    "default_icon": "icons/eye16.png",
+    "default_title": "Accessibility",
+    "default_popup": "popup/accessibility.html"
+  },
+  "icons": {
+    "16": "icons/eye16.png",
+    "48": "icons/eye48.png",
+    "128": "icons/eye128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
       ],
-      "background": {
-        "scripts": ["blockscript.js","blocklist.js"],
-        "type": "module",
-        "persistent": false
-      }
-    
+      "js": [
+        "script.js"
+      ],
+      "css": [
+        "styles.css"
+      ]
+    }
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+        "id": "faristol_firefox_extension@accessibility.com"
+    }
+},
+  "web_accessible_resources": [
+    "fonts/opendyslexic-regular.ttf",
+    "fonts/hyperlegible-regular.ttf"
+  ],
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Y",
+        "mac": "Command+Shift+Y"
+      },
+      "description": "Open popup"
+    }
+  },
+  "background": {
+    "scripts": [
+      "blockscript.js",
+      "blocklist.js"
+    ],
+    "type": "module",
+    "persistent": true
   }
-  
+}
