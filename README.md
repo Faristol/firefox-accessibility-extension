@@ -3,36 +3,40 @@
 
 ## Description
 
-This extension acts as a multipurpose accessibility extension, these are the features it handles:
+This extension acts as a **multipurpose accessibility extension**, these are the features it handles:
 
 
-* Changes the size and weight of the text
-* Add contrast
-* Invert colors
-* Changes the font (Arial, OpenDyslexic, Atkinson Hyperlegible)
-* Can reproduce the text of the page
-* Incorpores a adblocker with a 96% of effectiveness
+* Changes the **size** and **weight** of the text
+* Add **contrast**
+* **Invert colors**
+* Changes the **font** (Arial, OpenDyslexic, Atkinson Hyperlegible)
+* **Reproduce** the text of the page with and without summarization. The extension incorporates an **AI summarization model called BART**
+* Incorpores a **adblocker** with a 96% of effectiveness
 # Installation
 ## You can download it from the firefox marketplace.
 
-## For run it locally: 
+## To run it locally: 
 
-For load the extension:
+To load the extension:
 1. Enter the URL `about:debugging#/runtime/this-firefox` in your browser.
 2. Click on "Load Temporary Add-on".
 3. Select the `manifest.json` file.
 4. Press "Refresh".
 
-For run the AI summarize model (bart):
+## To run the AI summarize model (bart):
 
-0. Prerequisites: docker
+**Prerequisites**: you need Docker installer in your system and enough space to accommodate a Docker image that weighs around 25GB
+
+Download the **sumup** directory and execute the next commands:
+```
+cd sumup
+sudo docker build -t bart
+docker run -it -d --name bart_container -p 5000:5000 bart
+
+```
+Once you have done this, your model will run automatically.
 
 
-
-
-
-
-If you prefer run the backend locally: 
 ## Help
 
 If need some help or find some bugs, contact : faristol.dev@gmail.com
