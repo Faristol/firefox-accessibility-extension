@@ -5,20 +5,13 @@ from transformers import BartForConditionalGeneration, BartTokenizer
 
 app = Flask(__name__)
 CORS(app, origins="*")
-
-# Inicializar el modelo BART y el tokenizador
 model = BartForConditionalGeneration.from_pretrained("facebook/bart-large-cnn")
 tokenizer = BartTokenizer.from_pretrained("facebook/bart-large-cnn")
-
-
-
 
 @app.route('/sumup', methods=['POST'])
 def summarize_text():
     data = request.get_json()
     text_to_summarize = data['text']
-
-    # Dividir el texto en trozos de máximo 1024 tokens
     chunk_size = 1024
     chunks = [text_to_summarize[i:i+chunk_size] for i in range(0, len(text_to_summarize), chunk_size)]
     print(chunks)
@@ -50,13 +43,8 @@ def summarize_text():
         )
 
         summaries.append(summary)
-
-    # Unir los resúmenes de los trozos
     full_summary = " ".join(summaries)
-  
-    
-
     return jsonify({'summary': full_summary})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')
