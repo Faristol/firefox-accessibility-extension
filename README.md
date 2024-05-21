@@ -18,7 +18,7 @@ This extension acts as a **multipurpose accessibility extension**, these are the
 ## To run it locally: 
 
 To load the extension:
-1. Enter the URL `about:debugging#/runtime/this-firefox` in your browser.
+1. Enter the URL `about:debugging#/runtime/this-firefox` in your firefox browser.
 2. Click on "Load Temporary Add-on".
 3. Select the `manifest.json` file.
 4. Press "Refresh".
@@ -27,7 +27,7 @@ To load the extension:
 
 **Prerequisites**: you need Docker installer in your system and enough space to accommodate a Docker image that weighs around 25GB
 
-Download the **sumup** directory and execute the next commands:
+Download the **sumup** directory and execute the following commands:
 ```
 cd sumup
 sudo docker build -t bart
