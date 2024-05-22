@@ -13,25 +13,24 @@ This extension acts as a **multipurpose accessibility extension**, these are the
 
 # Installation
 
-## You can download it from the firefox marketplace.
-
-## To run it locally:
+You can download it from the firefox marketplace or run it locally:
 
 To load the extension:
 
-1. Enter the URL `about:debugging#/runtime/this-firefox` in your firefox browser.
-2. Click on "Load Temporary Add-on".
-3. Select the `manifest.json` file.
-4. Press "Refresh".
+1. Download the `accessibility_extension` directory
+2. Enter the URL `about:debugging#/runtime/this-firefox` in your firefox browser.
+3. Click on "Load Temporary Add-on".
+4. Select the `manifest.json` file.
+5. Press "Refresh".
 
-## To run the AI summarize model (bart):
+## To run the AI summarize model:
 
 **Prerequisites**: you need Docker installed in your system and enough space to accommodate a Docker image that weighs around 25GB
 
 ### To deploy it **locally**:
 
-1. Download the **sumup** directory only with the `sumup_local.py` and the `Dockerfile`.
-2. Open the Dockerfile and modify the last line to:
+1. Download the `sumup` directory only with the `sumup_local.py` and the `Dockerfile`.
+2. Open the `Dockerfile` and modify the last line to:
    `CMD ["gunicorn", "-b", "0.0.0.0:5000", "sumup_local:app"]`
 3. Open the `script.js` file and modify the global variable called `URL` to:
    `http://127.0.0.1:5000/sumup`.Also, remove the `API_KEY` variable and in the function called `sumup`, remove `"x-api-key": API_KEY` from the headers.
@@ -56,9 +55,9 @@ curl -X POST http://127.0.0.1:5000/sumup -H "Content-Type: application/json" -d 
 
 Also, if u want to run it remotely, you need to generate a secure API_KEY, and follow these steps:
 
-1. Download the **sumup** directory only with the `sumup_vm.py` and the `Dockerfile`.
+1. Download the `sumup` directory only with the `sumup_vm.py` and the `Dockerfile`.
 2. In the `sumup` directory, create a file called `.env`, and inside write: `API_KEY=your_api_key`
-3. Open the script.js file and set your server URL, for example `http://43.155.121.121/sumup`. Also, include your `API_KEY`.
+3. Open the `script.js` file and set your server `URL`, for example `http://43.155.121.121/sumup`. Also, include your `API_KEY`.
 4. Finally execute the following commands:
 
 ```
