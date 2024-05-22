@@ -1,6 +1,7 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, abort
 from flask_cors import CORS
 from transformers import BartForConditionalGeneration, BartTokenizer
+import os
 
 
 app = Flask(__name__)
@@ -8,23 +9,27 @@ CORS(app, origins="*")
 model = BartForConditionalGeneration.from_pretrained("facebook/bart-large-cnn")
 tokenizer = BartTokenizer.from_pretrained("facebook/bart-large-cnn")
 
-@app.route('/sumup', methods=['POST'])
+API_KEY = os.getenv("API_KEY")
+
+
+@app.route("/sumup", methods=["POST"])
 def summarize_text():
+    api_key_header = request.headers.get("x-api-key")
+    if api_key_header != API_KEY:
+        abort(403, description="Forbidden: Invalid API Key")
     data = request.get_json()
-    text_to_summarize = data['text']
+    text_to_summarize = data["text"]
     chunk_size = 1024
-    chunks = [text_to_summarize[i:i+chunk_size] for i in range(0, len(text_to_summarize), chunk_size)]
+    chunks = [
+        text_to_summarize[i : i + chunk_size]
+        for i in range(0, len(text_to_summarize), chunk_size)
+    ]
     print(chunks)
 
     summaries = []
 
     for chunk in chunks:
-        inputs = tokenizer(
-            chunk, 
-            return_tensors="pt", 
-            max_length=1024, 
-            truncation=True
-        )
+        inputs = tokenizer(chunk, return_tensors="pt", max_length=1024, truncation=True)
 
         outputs = model.generate(
             inputs["input_ids"],
@@ -44,7 +49,8 @@ def summarize_text():
 
         summaries.append(summary)
     full_summary = " ".join(summaries)
-    return jsonify({'summary': full_summary})
+    return jsonify({"summary": full_summary})
 
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
+
+if __name__ == "__main__":
+    app.run(debug=True, host="0.0.0.0")
