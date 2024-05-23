@@ -19,9 +19,9 @@ To load the extension:
 
 1. Download the `accessibility_extension` directory
 2. Enter the URL `about:debugging#/runtime/this-firefox` in your firefox browser.
-3. Click on "Load Temporary Add-on".
+3. Click on `Load Temporary Add-on`.
 4. Select the `manifest.json` file.
-5. Press "Refresh".
+5. Press `Reload`.
 
 ## To run the AI summarize model:
 

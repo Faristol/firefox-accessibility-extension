@@ -68,6 +68,23 @@ if (document.readyState === "loading") {
   afterDOMLoaded();
   appendFonts();
 }
+
+async function afterDOMLoaded() {
+  try {
+    const styles = await readLocalStorage([
+      "fontsize",
+      "contrast",
+      "bold",
+      "invert",
+      "fontfamily",
+    ]);
+    for (values in styles) {
+      changeProperty(styles[values]);
+    }
+  } catch (error) {
+    console.error("There was a problem with reading local storage:", error);
+  }
+}
 function appendFonts() {
   const fontUrlDyslexic = browser.runtime.getURL(
     "fonts/opendyslexic-regular.ttf"
@@ -96,18 +113,6 @@ function appendFonts() {
   }`;
   document.head.appendChild(styleHyperlegible);
 }
-async function afterDOMLoaded() {
-  let styles = await readLocalStorage([
-    "fontsize",
-    "contrast",
-    "bold",
-    "invert",
-    "fontfamily",
-  ]);
-  for (values in styles) {
-    changeProperty(styles[values]);
-  }
-}
 
 browser.runtime.onMessage.addListener((message) => {
   //isn't necessary make a loop for each key, cause there is only one
@@ -120,7 +125,6 @@ browser.runtime.onMessage.addListener((message) => {
       case "play":
         const text = extractText();
         sumup(text);
-        utterancePlay(text);
         break;
       case "pause":
         if (utterance) {
@@ -191,16 +195,20 @@ function extractText() {
 }
 
 function utterancePlay(text) {
+  console.log("utterancePlay", text);
+  const voices = synth.getVoices();
+  const pageLang = document.documentElement.lang;
+  console.log("pageLang", pageLang);
+  const voice = voices.find((voice) => {
+    const regex = new RegExp(pageLang.split("-")[0], "i");
+    return voice.lang.match(regex);
+  });
   utterance = new SpeechSynthesisUtterance(text);
   utterance.volume = 0.7;
   utterance.rate = 0.8;
   utterance.pitch = 1;
-  const voices = synth.getVoices();
-  const pageLang = document.documentElement.lang;
-  const voice = voices.find((voice) => {
-    const regex = new RegExp(pageLang, "i");
-    return voice.lang.match(regex);
-  });
+
+  console.log("voice", voice);
   if (voice) {
     utterance.voice = voice;
     synth.speak(utterance);
@@ -214,8 +222,8 @@ function sumup(text) {
   let payload = {
     text: text,
   };
-  console.log(API_KEY)
-  console.log(API_URL)
+  console.log(API_KEY);
+  console.log(API_URL);
   const requestOptions = {
     method: "POST",
     headers: {
@@ -234,7 +242,8 @@ function sumup(text) {
     })
     .then((data) => {
       const summary = data.summary;
-      return summary;
+      console.log("Summary:", summary);
+      utterancePlay(summary);
     })
     .catch((error) => {
       console.error("Error:", error);
