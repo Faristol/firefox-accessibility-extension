@@ -5,6 +5,7 @@
 </h1>
 <div align="center">
 <img src="https://github.com/Faristol/firefox-accessibility-extension/blob/main/screenshots/screenshot_1.png?raw=true" alt="img" style=" height: 500px">
+<img src="https://github.com/Faristol/firefox-accessibility-extension/blob/main/screenshots/screenshot_2.png?raw=true" alt="img" style=" height: 500px">
 </div>
 
 ## Description
