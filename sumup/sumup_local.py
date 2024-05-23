@@ -18,7 +18,7 @@ def summarize_text():
         text_to_summarize[i : i + chunk_size]
         for i in range(0, len(text_to_summarize), chunk_size)
     ]
-    print(chunks)
+
 
     summaries = []
 
@@ -47,4 +47,4 @@ def summarize_text():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0")
+    app.run(debug=False, host="0.0.0.0")

@@ -1,15 +1,15 @@
 from flask import Flask, request, jsonify, abort
 from flask_cors import CORS
+from dotenv import dotenv_values
 from transformers import BartForConditionalGeneration, BartTokenizer
-import os
 
-
+config = dotenv_values(".env")
 app = Flask(__name__)
 CORS(app, origins="*")
 model = BartForConditionalGeneration.from_pretrained("facebook/bart-large-cnn")
 tokenizer = BartTokenizer.from_pretrained("facebook/bart-large-cnn")
 
-API_KEY = os.getenv("API_KEY")
+API_KEY = config.get("API_KEY")
 
 
 @app.route("/sumup", methods=["POST"])
@@ -24,8 +24,6 @@ def summarize_text():
         text_to_summarize[i : i + chunk_size]
         for i in range(0, len(text_to_summarize), chunk_size)
     ]
-    print(chunks)
-
     summaries = []
 
     for chunk in chunks:
@@ -49,8 +47,9 @@ def summarize_text():
 
         summaries.append(summary)
     full_summary = " ".join(summaries)
+    print(full_summary)
     return jsonify({"summary": full_summary})
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0")
+    app.run(debug=False, host="0.0.0.0")

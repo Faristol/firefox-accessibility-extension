@@ -9,7 +9,7 @@ RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
 RUN pip install --upgrade pip
-RUN pip install Flask flask-cors transformers torch gunicorn
+RUN pip install Flask flask-cors transformers torch python-dotenv
 
 RUN git lfs install
 RUN git clone https://huggingface.co/facebook/bart-large-cnn /bart-large-cnn
@@ -17,5 +17,4 @@ EXPOSE 5000
 
 COPY . .
 
-CMD ["gunicorn","-b","0.0.0.0:5000","--timeout","120","sumup_vm:app"]
-
+CMD ["python3","sumup_vm.py"]

@@ -31,7 +31,7 @@ To load the extension:
 
 1. Download the `sumup` directory only with the `sumup_local.py` and the `Dockerfile`.
 2. Open the `Dockerfile` and modify the last line to:
-   `CMD ["gunicorn", "-b", "0.0.0.0:5000","--timeout", "120", "sumup_local:app"]`
+   `CMD ["python3","sumup_local.py"]`
 3. Create a file named `url_key.json` in the `accessibility_extension` directory and add the following content:
 
 ```
