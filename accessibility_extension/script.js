@@ -1,6 +1,5 @@
 const SIZES = ["small", "medium", "large", "x-large", "xx-large", "xxx-large"];
 const FONTS = ["arial", "opendyslexic", "hyperlegible"];
-const STYLES = ["fontsize", "contrast", "bold", "invert", "fontfamily"];
 let utterance = null;
 let synth = window.speechSynthesis;
 let API_URL = null;
@@ -59,8 +58,6 @@ if (document.readyState === "loading") {
     .then((data) => {
       API_URL = data.API_URL;
       API_KEY = data.API_KEY;
-      console.log(API_URL);
-      console.log(API_KEY);
     })
     .catch((error) => {
       console.error("There was a problem with the fetch operation:", error);
@@ -189,16 +186,17 @@ browser.runtime.onMessage.addListener((message) => {
   writeLocalStorage(keys[0], value);
   //window.location.reload();
 });
+//T¡this function retrieves all the text within the body removes extra spaces,
+// tabs, and line breaks, and returns the cleaned-up text as a single string
 function extractText() {
   let text = document.querySelector("body").innerText;
   return text.trim().replace(/\s+/g, " ");
 }
-
+//selects a voice matching the document's language and initiates speech synthesis with the provided text.
+// If no matching voice is found, it defaults to the first available voice.
 function utterancePlay(text) {
-  console.log("utterancePlay", text);
   const voices = synth.getVoices();
   const pageLang = document.documentElement.lang;
-  console.log("pageLang", pageLang);
   const voice = voices.find((voice) => {
     const regex = new RegExp(pageLang.split("-")[0], "i");
     return voice.lang.match(regex);
@@ -207,23 +205,24 @@ function utterancePlay(text) {
   utterance.volume = 0.7;
   utterance.rate = 0.8;
   utterance.pitch = 1;
-
-  console.log("voice", voice);
   if (voice) {
     utterance.voice = voice;
     synth.speak(utterance);
   } else {
-    console.log("No voice found for", pageLang);
     utterance.voice = synth.getVoices()[0];
     synth.speak(utterance);
   }
 }
+/*
+
+This function sends a POST request to a specified API endpoint with the provided text. 
+Upon receiving a successful response, it extracts the summary 
+from the response data and initiates speech synthesis.
+*/
 function sumup(text) {
   let payload = {
     text: text,
   };
-  console.log(API_KEY);
-  console.log(API_URL);
   const requestOptions = {
     method: "POST",
     headers: {
@@ -242,7 +241,6 @@ function sumup(text) {
     })
     .then((data) => {
       const summary = data.summary;
-      console.log("Summary:", summary);
       utterancePlay(summary);
     })
     .catch((error) => {
