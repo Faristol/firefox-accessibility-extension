@@ -63,8 +63,6 @@ if (document.readyState === "loading") {
   .then(data => {
     API_URL = data.API_URL;
     API_KEY = data.API_KEY;
-    console.log("API URL:", API_URL);
-    console.log("API Key:", API_KEY);
   })
   .catch(error => {
     console.error('There was a problem with the fetch operation:', error);

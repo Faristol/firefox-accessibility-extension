@@ -32,7 +32,8 @@ To load the extension:
 1. Download the `sumup` directory only with the `sumup_local.py` and the `Dockerfile`.
 2. Open the `Dockerfile` and modify the last line to:
    `CMD ["gunicorn", "-b", "0.0.0.0:5000", "sumup_local:app"]`
-3. Create a file called `url_key.json` in the `accessibility_extension` directory and write this:
+3. Create a file named `url_key.json` in the `accessibility_extension` directory and add the following content:
+
 ```
 {
     "API_URL":"http://127.0.0.1:5000/sumup",
@@ -40,8 +41,8 @@ To load the extension:
 }
 
 ```
-Also, in the function called `sumup` remove `"x-api-key": API_KEY` from the headers.
-4. Finally, execute the following commands:
+
+Also, in the `sumup` function, remove `"x-api-key": API_KEY` from the headers. 4. Finally, execute the following commands:
 
 ```
 cd sumup
@@ -64,7 +65,8 @@ Also, if u want to run it remotely, you need to generate a secure API_KEY, and f
 
 1. Download the `sumup` directory only with the `sumup_vm.py` and the `Dockerfile`.
 2. In the `sumup` directory, create a file called `.env`, and inside write: `API_KEY=your_api_key`
-3. Create a file called `url_key.json` in the `accessibility_extension` directory and write this:
+3. Create a file named `url_key.json` in the `accessibility_extension` directory and add the following content:
+
 ```
 {
     "API_URL":"http://YOUR_SERVER_IP:5000/sumup",
@@ -72,6 +74,7 @@ Also, if u want to run it remotely, you need to generate a secure API_KEY, and f
 }
 
 ```
+
 4. Finally execute the following commands:
 
 ```
