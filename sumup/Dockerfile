@@ -4,7 +4,7 @@ RUN apt-get update && \
     apt-get install -y python3-pip git git-lfs python3-venv && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
-    
+
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
@@ -17,5 +17,5 @@ EXPOSE 5000
 
 COPY . .
 
-CMD ["gunicorn", "-b", "0.0.0.0:5000", "sumup_vm:app"]
+CMD ["gunicorn","-b","0.0.0.0:5000","--timeout","120","sumup_vm:app"]
 

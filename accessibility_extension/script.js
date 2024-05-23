@@ -59,6 +59,8 @@ if (document.readyState === "loading") {
     .then((data) => {
       API_URL = data.API_URL;
       API_KEY = data.API_KEY;
+      console.log(API_URL);
+      console.log(API_KEY);
     })
     .catch((error) => {
       console.error("There was a problem with the fetch operation:", error);
@@ -212,6 +214,8 @@ function sumup(text) {
   let payload = {
     text: text,
   };
+  console.log(API_KEY)
+  console.log(API_URL)
   const requestOptions = {
     method: "POST",
     headers: {
