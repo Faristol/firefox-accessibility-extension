@@ -1,8 +1,10 @@
 <h1 align="center">
   <img src="https://github.com/Faristol/firefox-accessibility-extension/blob/main/accessibility_extension/icons/eye128.png?raw=true" alt="icon" style="width: 128px; height: 128px"><br>
   Accessibility extension for firefox
-
 </h1>
+<div align="center">
+<img src="https://github.com/Faristol/firefox-accessibility-extension/blob/main/screenshots/screenshot_1.png?raw=true" alt="img" style="width: 500px; height: 500px">
+</div>
 
 ## Description
 
