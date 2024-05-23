@@ -71,6 +71,7 @@ Also, if u want to run it remotely, you need to generate a secure API_KEY, and f
     "API_KEY":"YOUR_API_KEY"
 }
 
+```
 4. Finally execute the following commands:
 
 ```
