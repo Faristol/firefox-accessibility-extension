@@ -41,7 +41,8 @@
 },
   "web_accessible_resources": [
     "fonts/opendyslexic-regular.ttf",
-    "fonts/hyperlegible-regular.ttf"
+    "fonts/hyperlegible-regular.ttf",
+    "url_key.json"
   ],
   "commands": {
     "_execute_action": {

@@ -32,8 +32,15 @@ To load the extension:
 1. Download the `sumup` directory only with the `sumup_local.py` and the `Dockerfile`.
 2. Open the `Dockerfile` and modify the last line to:
    `CMD ["gunicorn", "-b", "0.0.0.0:5000", "sumup_local:app"]`
-3. Open the `script.js` file and modify the global variable called `URL` to:
-   `http://127.0.0.1:5000/sumup`.Also, remove the `API_KEY` variable and in the function called `sumup`, remove `"x-api-key": API_KEY` from the headers.
+3. Create a file called `url_key.json` in the `accessibility_extension` directory and write this:
+```
+{
+    "API_URL":"http://127.0.0.1:5000/sumup",
+    "API_KEY":"null"
+}
+
+```
+Also, in the function called `sumup` remove `"x-api-key": API_KEY` from the headers.
 4. Finally, execute the following commands:
 
 ```
@@ -51,13 +58,19 @@ curl -X POST http://127.0.0.1:5000/sumup -H "Content-Type: application/json" -d 
 
 ```
 
-### For deploy it **remotely**:
+### To deploy it **remotely**:
 
 Also, if u want to run it remotely, you need to generate a secure API_KEY, and follow these steps:
 
 1. Download the `sumup` directory only with the `sumup_vm.py` and the `Dockerfile`.
 2. In the `sumup` directory, create a file called `.env`, and inside write: `API_KEY=your_api_key`
-3. Open the `script.js` file and set your server `URL`, for example `http://43.155.121.121/sumup`. Also, include your `API_KEY`.
+3. Create a file called `url_key.json` in the `accessibility_extension` directory and write this:
+```
+{
+    "API_URL":"http://YOUR_SERVER_IP:5000/sumup",
+    "API_KEY":"YOUR_API_KEY"
+}
+
 4. Finally execute the following commands:
 
 ```

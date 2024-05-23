@@ -3,6 +3,8 @@ const FONTS = ["arial", "opendyslexic", "hyperlegible"];
 const STYLES = ["fontsize", "contrast", "bold", "invert", "fontfamily"];
 let utterance = null;
 let synth = window.speechSynthesis
+let API_URL = null;
+let API_KEY = null;
 /*
 ->FUNCTIONS THAT OPERATES WITH THE FIREFOX STORAGE (read,write,remove)
 ->INITIAL CALL TO READ THE LOCAL STORAGE AND ADD THE STYLES STORED TOT THE CURRENT PAGE
@@ -48,6 +50,25 @@ const removeLocalStorage = async (key) => {
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", afterDOMLoaded);
 } else {
+  const URL_KEY = browser.runtime.getURL(
+    "url_key.json"
+  );
+  fetch(URL_KEY)
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
+  .then(data => {
+    API_URL = data.API_URL;
+    API_KEY = data.API_KEY;
+    console.log("API URL:", API_URL);
+    console.log("API Key:", API_KEY);
+  })
+  .catch(error => {
+    console.error('There was a problem with the fetch operation:', error);
+  });
   afterDOMLoaded();
   appendFonts();
 }
