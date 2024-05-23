@@ -1,3 +1,4 @@
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/U7U0XZDPY)
 <h1 align="center">
   <img src="https://github.com/Faristol/firefox-accessibility-extension/blob/main/accessibility_extension/icons/eye128.png?raw=true" alt="icon" style="width: 128px; height: 128px"><br>
   Accessibility extension for firefox
