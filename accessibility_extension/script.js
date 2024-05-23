@@ -2,7 +2,7 @@ const SIZES = ["small", "medium", "large", "x-large", "xx-large", "xxx-large"];
 const FONTS = ["arial", "opendyslexic", "hyperlegible"];
 const STYLES = ["fontsize", "contrast", "bold", "invert", "fontfamily"];
 let utterance = null;
-let synth = window.speechSynthesis
+let synth = window.speechSynthesis;
 let API_URL = null;
 let API_KEY = null;
 /*
@@ -22,8 +22,6 @@ const readLocalStorage = async (keys) => {
     });
   });
 };
-
-
 
 const writeLocalStorage = async (key, value) => {
   return new Promise((resolve, reject) => {
@@ -50,23 +48,21 @@ const removeLocalStorage = async (key) => {
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", afterDOMLoaded);
 } else {
-  const URL_KEY = browser.runtime.getURL(
-    "url_key.json"
-  );
+  const URL_KEY = browser.runtime.getURL("url_key.json");
   fetch(URL_KEY)
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return response.json();
-  })
-  .then(data => {
-    API_URL = data.API_URL;
-    API_KEY = data.API_KEY;
-  })
-  .catch(error => {
-    console.error('There was a problem with the fetch operation:', error);
-  });
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      API_URL = data.API_URL;
+      API_KEY = data.API_KEY;
+    })
+    .catch((error) => {
+      console.error("There was a problem with the fetch operation:", error);
+    });
   afterDOMLoaded();
   appendFonts();
 }
@@ -213,7 +209,6 @@ function utterancePlay(text) {
   }
 }
 function sumup(text) {
-  const url = "http://127.0.0.1:5000/sumup";
   let payload = {
     text: text,
   };
@@ -221,10 +216,11 @@ function sumup(text) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "x-api-key": API_KEY,
     },
     body: JSON.stringify(payload),
   };
-  fetch(url, requestOptions)
+  fetch(API_URL, requestOptions)
     .then((response) => {
       if (!response.ok) {
         console.error("Error:", response.status, response.statusText);
@@ -241,6 +237,7 @@ function sumup(text) {
     });
 }
 function changeProperty(cssClass) {
+  //in some pages, like wikipedia, the contrast don't work properly. To apply it, reload the page
   let elements = document.querySelectorAll("*");
   for (let i = 0; i < elements.length; i++) {
     if (SIZES.includes(cssClass)) {

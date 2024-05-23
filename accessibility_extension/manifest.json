@@ -36,9 +36,9 @@
   ],
   "browser_specific_settings": {
     "gecko": {
-        "id": "faristol_firefox_extension@accessibility.com"
+      "id": "faristol_firefox_extension@accessibility.com"
     }
-},
+  },
   "web_accessible_resources": [
     "fonts/opendyslexic-regular.ttf",
     "fonts/hyperlegible-regular.ttf",

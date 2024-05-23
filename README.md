@@ -9,7 +9,7 @@ This extension acts as a **multipurpose accessibility extension**, these are the
 - **Invert colors**
 - Changes the **font** (Arial, OpenDyslexic, Atkinson Hyperlegible)
 - **Reproduce** the text of the page with and without summarization. The extension incorporates an **AI summarization model called BART**
-- Incorpores a **adblocker** with a 96% of effectiveness
+- Incorpores a **adblocker** with a 97% of effectiveness
 
 # Installation
 
@@ -42,7 +42,8 @@ To load the extension:
 
 ```
 
-Also, in the `sumup` function, remove `"x-api-key": API_KEY` from the headers. 4. Finally, execute the following commands:
+Also, in the `sumup` function, remove `"x-api-key": API_KEY` from the headers. 
+4. Finally, execute the following commands:
 
 ```
 cd sumup
