@@ -100,12 +100,11 @@ curl -X POST http://YOUR_SERVER_IP:5000/sumup -H "Content-Type: application/json
 ```
 ## Notes
 
-You've encountered some issues with the extension on Linux:
+You've encountered some issues with the extension:
 
 * When applying contrast, particularly on pages like Wikipedia, a manual refresh is necessary. Otherwise, while the background color changes to black, the text remains unaffected and doesn't switch to white.
-* The pause and resume buttons aren't functional. These buttons trigger the pause() and resume() functions, both of which are related to speechSynthesis.
+* The pause and resume buttons aren't functional. These buttons trigger the pause() and resume() functions, both of which are related to speechSynthesis. This only happens in linux.
 
-Additionally, it's worth noting that the extension works fine on Windows.
 
 ## Help
 
